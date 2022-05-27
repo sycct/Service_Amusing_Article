@@ -24,7 +24,7 @@ if __name__ == '__main__':
     # 实例化一个调度器
     scheduler = BlockingScheduler(timezone='Asia/Shanghai')
     # 添加任务并设置触发方式每天9点执行一次
-    scheduler.add_job(init_amusing.news_api_run, 'cron', hour=1)
+    scheduler.add_job(init_amusing.zhihu_run, 'cron', hour=9)
     # 开始运行调度器
     try:
         scheduler.start()

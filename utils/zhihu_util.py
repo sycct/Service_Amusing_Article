@@ -8,8 +8,9 @@ import uuid
 import paramiko
 from MySQLdb import DataError
 
-from config import zhihu_new_latest_url, logging_config, zhihu_new_content_url, mysql_connection_pool, remote_host, \
-    remote_user, remote_password, zhihu_cdn_path
+from config import zhihu_new_latest_url, logging_config, zhihu_new_content_url, mysql_connection_pool, \
+    ion_remote_host, ion_remote_user, ion_remote_password, zhihu_cdn_path, wagong_remote_host, wagong_port, \
+    wagong_remote_user, wagong_remote_password
 from utils import common_util
 
 
@@ -42,7 +43,11 @@ class ZhiHuUtil(object):
             get_local_files = self._init_common.findAllFile(local_file_path)
             for file in get_local_files:
                 # 上传单个文件到服务器
-                self.update_files_to_ubuntu_server(file)
+                # ion 服务器
+                self.update_files_to_ubuntu_server(file, ion_remote_host, ion_remote_user, ion_remote_password)
+                # bandwagong host 服务器
+                self.update_files_to_ubuntu_server(file, wagong_remote_host, wagong_remote_user, wagong_remote_password,
+                                                   wagong_port)
                 # 删除单个文件
                 self.delete_file(file)
 
@@ -112,15 +117,20 @@ class ZhiHuUtil(object):
             return False
 
     @staticmethod
-    def update_files_to_ubuntu_server(send_file_name):
+    def update_files_to_ubuntu_server(send_file_name, host, user, password, port=None):
         """
         将单个文件上传到远程服务器
+        :param host: 服务器地址
+        :param port: 服务器端口，空为默认22
+        :param password: 密码
+        :param user: 用户名
         :param send_file_name: 图片的文件名
         :return:
         """
+        port = int(port) if port else 22
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        ssh.connect(remote_host, username=remote_user, password=remote_password)
+        ssh.connect(hostname=host, port=port, username=user, password=password)
         sftp = ssh.open_sftp()
         # 本地文件路径
         local_file_path = path.join(os.getcwd(), f'files/{send_file_name}')

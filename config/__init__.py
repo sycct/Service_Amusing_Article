@@ -11,9 +11,15 @@ if os.path.exists(dotenv_path):
 
 zhihu_new_latest_url = os.environ.get('ZHIHU_NEWS_LATEST_URL')
 zhihu_new_content_url = os.environ.get('ZHIHU_NEWS_CONTENT_URL')
-remote_host = os.environ.get('REMOTE_UBUNTU_HOST')
-remote_user = os.environ.get('REMOTE_UBUNTU_USER')
-remote_password = os.environ.get('REMOTE_UBUNTU_PASSWORD')
+# ion server info
+ion_remote_host = os.environ.get('ION_REMOTE_UBUNTU_HOST')
+ion_remote_user = os.environ.get('ION_REMOTE_UBUNTU_USER')
+ion_remote_password = os.environ.get('ION_REMOTE_UBUNTU_PASSWORD')
+# bandwagong host server info
+wagong_remote_host = os.environ.get('BANDWAGONG_REMOTE_UBUNTU_HOST')
+wagong_port = os.environ.get('BANDWAGONG_PORT')
+wagong_remote_user = os.environ.get('BANDWAGONG_REMOTE_UBUNTU_USER')
+wagong_remote_password = os.environ.get('BANDWAGONG_REMOTE_UBUNTU_PASSWORD')
 # 保存知乎日报图片远程文件路径
 zhihu_cdn_path = os.environ.get('REMOTE_UBUNTU_ZHIHU_CDN_PATH')
 # News API url
