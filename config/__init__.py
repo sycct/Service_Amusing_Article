@@ -11,10 +11,9 @@ if os.path.exists(dotenv_path):
 
 zhihu_new_latest_url = os.environ.get('ZHIHU_NEWS_LATEST_URL')
 zhihu_new_content_url = os.environ.get('ZHIHU_NEWS_CONTENT_URL')
-# ion server info
-ion_remote_host = os.environ.get('ION_REMOTE_UBUNTU_HOST')
-ion_remote_user = os.environ.get('ION_REMOTE_UBUNTU_USER')
-ion_remote_password = os.environ.get('ION_REMOTE_UBUNTU_PASSWORD')
+# server info
+remote_host = os.environ.get('REMOTE_UBUNTU_HOST')
+remote_user = os.environ.get('REMOTE_UBUNTU_USER')
 # bandwagong host server info
 wagong_remote_host = os.environ.get('BANDWAGONG_REMOTE_UBUNTU_HOST')
 wagong_port = os.environ.get('BANDWAGONG_PORT')

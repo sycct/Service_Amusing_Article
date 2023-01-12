@@ -9,8 +9,7 @@ import paramiko
 from MySQLdb import DataError
 
 from config import zhihu_new_latest_url, logging_config, zhihu_new_content_url, mysql_connection_pool, \
-    ion_remote_host, ion_remote_user, ion_remote_password, zhihu_cdn_path, wagong_remote_host, wagong_port, \
-    wagong_remote_user, wagong_remote_password
+    remote_host, remote_user, zhihu_cdn_path
 from utils import common_util
 
 
@@ -24,6 +23,7 @@ class ZhiHuUtil(object):
         self._logging = init_logging.init_logging(logger_name)
         self._mysql = mysql_connection_pool.Mysql()
         self._init_common = common_util.CommonUtil()
+        self._key_path = path.join(os.getcwd(), 'key\\wmiss_hk.pem')
 
     def zhihu_main(self):
         get_title_data = self.get_new_latest()
@@ -44,10 +44,7 @@ class ZhiHuUtil(object):
             for file in get_local_files:
                 # 上传单个文件到服务器
                 # ion 服务器
-                self.update_files_to_ubuntu_server(file, ion_remote_host, ion_remote_user, ion_remote_password)
-                # bandwagong host 服务器
-                self.update_files_to_ubuntu_server(file, wagong_remote_host, wagong_remote_user, wagong_remote_password,
-                                                   wagong_port)
+                self.update_files_to_ubuntu_server(file, remote_host, remote_user)
                 # 删除单个文件
                 self.delete_file(file)
 
@@ -116,21 +113,20 @@ class ZhiHuUtil(object):
             self._logging.error(f"保存知乎日报的内容出现错误，id 为：{content_id}")
             return False
 
-    @staticmethod
-    def update_files_to_ubuntu_server(send_file_name, host, user, password, port=None):
+    def update_files_to_ubuntu_server(self, send_file_name, host, user, port=None):
         """
         将单个文件上传到远程服务器
         :param host: 服务器地址
         :param port: 服务器端口，空为默认22
-        :param password: 密码
         :param user: 用户名
         :param send_file_name: 图片的文件名
         :return:
         """
         port = int(port) if port else 22
         ssh = paramiko.SSHClient()
+        private_key = paramiko.RSAKey.from_private_key_file(self._key_path)
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        ssh.connect(hostname=host, port=port, username=user, password=password)
+        ssh.connect(pkey=private_key, hostname=host, port=port, username=user)
         sftp = ssh.open_sftp()
         # 本地文件路径
         local_file_path = path.join(os.getcwd(), f'files/{send_file_name}')
