@@ -9,7 +9,7 @@ import paramiko
 from MySQLdb import DataError
 
 from config import zhihu_new_latest_url, logging_config, zhihu_new_content_url, mysql_connection_pool, \
-    remote_host, remote_user, zhihu_cdn_path
+    remote_host, remote_user, zhihu_cdn_path, vmiss_us_remote_host, vmiss_us_remote_user
 from utils import common_util
 
 
@@ -24,6 +24,7 @@ class ZhiHuUtil(object):
         self._mysql = mysql_connection_pool.Mysql()
         self._init_common = common_util.CommonUtil()
         self._key_path = path.join(os.getcwd(), 'key\\wmiss_hk.pem')
+        self._vmiss_us_key_path = path.join(os.getcwd(), 'key\\VMISSLosAngeles.pem')
 
     def zhihu_main(self):
         get_title_data = self.get_new_latest()
@@ -43,8 +44,10 @@ class ZhiHuUtil(object):
             get_local_files = self._init_common.findAllFile(local_file_path)
             for file in get_local_files:
                 # 上传单个文件到服务器
-                # ion 服务器
+                # vmiss hk 服务器
                 self.update_files_to_ubuntu_server(file, remote_host, remote_user)
+                # vmiss us 服务器
+                self.update_files_to_vmiss_us_ubuntu_server(file, vmiss_us_remote_host, vmiss_us_remote_user)
                 # 删除单个文件
                 self.delete_file(file)
 
@@ -125,6 +128,29 @@ class ZhiHuUtil(object):
         port = int(port) if port else 22
         ssh = paramiko.SSHClient()
         private_key = paramiko.RSAKey.from_private_key_file(self._key_path)
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh.connect(pkey=private_key, hostname=host, port=port, username=user)
+        sftp = ssh.open_sftp()
+        # 本地文件路径
+        local_file_path = path.join(os.getcwd(), f'files/{send_file_name}')
+        # 远程文件路径
+        remote_path = zhihu_cdn_path + send_file_name
+        sftp.put(local_file_path, remote_path)
+        sftp.close()
+        ssh.close()
+
+    def update_files_to_vmiss_us_ubuntu_server(self, send_file_name, host, user, port=None):
+        """
+        将单个文件上传到 vmiss us 远程服务器
+        :param host: 服务器地址
+        :param port: 服务器端口，空为默认22
+        :param user: 用户名
+        :param send_file_name: 图片的文件名
+        :return:
+        """
+        port = int(port) if port else 22
+        ssh = paramiko.SSHClient()
+        private_key = paramiko.RSAKey.from_private_key_file(self._vmiss_us_key_path)
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         ssh.connect(pkey=private_key, hostname=host, port=port, username=user)
         sftp = ssh.open_sftp()

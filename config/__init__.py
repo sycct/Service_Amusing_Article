@@ -14,11 +14,9 @@ zhihu_new_content_url = os.environ.get('ZHIHU_NEWS_CONTENT_URL')
 # server info
 remote_host = os.environ.get('REMOTE_UBUNTU_HOST')
 remote_user = os.environ.get('REMOTE_UBUNTU_USER')
-# bandwagong host server info
-wagong_remote_host = os.environ.get('BANDWAGONG_REMOTE_UBUNTU_HOST')
-wagong_port = os.environ.get('BANDWAGONG_PORT')
-wagong_remote_user = os.environ.get('BANDWAGONG_REMOTE_UBUNTU_USER')
-wagong_remote_password = os.environ.get('BANDWAGONG_REMOTE_UBUNTU_PASSWORD')
+# VMISS US host server info
+vmiss_us_remote_host = os.environ.get('VMISS_US_REMOTE_UBUNTU_HOST')
+vmiss_us_remote_user = os.environ.get('VMISS_US_REMOTE_UBUNTU_USER')
 # 保存知乎日报图片远程文件路径
 zhihu_cdn_path = os.environ.get('REMOTE_UBUNTU_ZHIHU_CDN_PATH')
 # News API url
