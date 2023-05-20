@@ -16,7 +16,7 @@ class ConnConfig:
         self.mysql_user = os.environ.get('MYSQL_USER')
         self.mysql_password = os.environ.get('MYSQL_PASSWORD')
         self.mysql_database = os.environ.get('MYSQL_DATABASE')
-        self.charset = 'utf8'
+        self.charset = 'utf8mb4'
 
     @retry(stop_max_attempt_number=10, wait_fixed=2)
     def conn_mysql(self):

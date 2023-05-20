@@ -55,10 +55,16 @@ class ZhiHuUtil(object):
         # 获取最新消息
         get_new_content = self._init_common.init_connection(self._init_zhihu_news_latest_url)
         if get_new_content:
+            temp_list = []
             get_stories = get_new_content['stories']
-            get_new_latest_list = [{'title': item['title'], 'list_image_url': item['images'][0], 'hint': item['hint'],
-                                    'content_url': item['url'], 'id': item['id']} for item in get_stories]
-            return get_new_latest_list
+            for item in get_stories:
+                try:
+                    images = item['images'][0]
+                except KeyError:
+                    images = 'https://staticx.dev/amusing/z/v2-23eb79a8d040db7ac15b2ac51dcee1fa.jpg'
+                temp_list.append({'title': item['title'], 'list_image_url': images, 'hint': item['hint'],
+                                  'content_url': item['url'], 'id': item['id']})
+            return temp_list
         else:
             self._logging.error(f"获取知乎日报 news latest 数据失败。")
 
