@@ -14,7 +14,7 @@ from utils import connection_util, proxy_util
 class MPUtil(object):
     def __init__(self):
         # 要访问的目标URL
-        self._url = 'https://mp.weixin.qq.com/s?__biz=Mzg2NDgzMTc5Ng==&mid=2247483740&idx=1&sn=6190630423bad538089862c01601416c&chksm=ce621107f9159811223174c17a88b0ff5d94594a514b2e3aa599c82fadd70731f4805b601f57&scene=132#wechat_redirect'
+        self._url = 'https://mp.weixin.qq.com/s?__biz=Mzg4MDA3MTMzMw==&mid=2247484778&idx=1&sn=8a97c65b24038e4e661c7ffa7ceeb9be&chksm=cf7b82a0f80c0bb66d63687711b820fd3aa26c822d5076eda51f33f2a9aaa2c04049abbf52e7&scene=132#wechat_redirect'
         self._connection = connection_util.ProcessConnection()
         self._proxy = proxy_util.ProxyUtil()
         self._path = os.path.join(os.getcwd(), 'files')
@@ -51,7 +51,10 @@ class MPUtil(object):
                     # 发送请求下载图片
                     img_response = self._connection.init_connection(url=img_url, proxies=proxies, binary=True)
                     # 解析原始地址的文件名和文件扩展名
-                    img_format = img['data-type']
+                    try:
+                        img_format = img['data-type']
+                    except KeyError:
+                        continue
                     # 检查响应状态码
                     if img_response:
                         img['class'] = img.get('class', []) + ['lazyload']

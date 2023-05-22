@@ -107,11 +107,12 @@ class ZhiHuUtil(object):
         :return: 保存成功 True, 未保存成功 False，并记录日志
         """
         get_link_text = str(uuid.uuid4())
-        insert_amusing_article_sql = f"INSERT INTO amusing_articles(TITLE, TOP_IMAGE_URL, TOP_IMAGE_ALT, TOP_IMAGE_TITLE, LIST_SMALL_IMAGE_URL, BODY_HTML, LINK_TEXT, article_info, URL, category_id) VALUE (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);"
+        insert_amusing_article_sql = f"INSERT INTO amusing_articles(TITLE, TOP_IMAGE_URL, TOP_IMAGE_ALT, TOP_IMAGE_TITLE, LIST_SMALL_IMAGE_URL, BODY_HTML, LINK_TEXT, article_info, URL, category_id, FORMAT_ID) VALUE (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);"
         try:
             amusing_article_result = self._mysql.insert_one(sql=insert_amusing_article_sql,
                                                             value=(title, top_img_url, title, title, list_img_url,
-                                                                   content, get_link_text, hint, str(uuid.uuid4()), 2))
+                                                                   content, get_link_text, hint, str(uuid.uuid4()), 2,
+                                                                   1))
         except DataError as e:
             self._logging.error(f"插入知乎文章出现错误，具体错误内容：{e}")
             return False
