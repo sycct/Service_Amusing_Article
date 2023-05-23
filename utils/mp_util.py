@@ -14,7 +14,7 @@ from utils import connection_util, proxy_util
 class MPUtil(object):
     def __init__(self):
         # 要访问的目标URL
-        self._url = 'https://mp.weixin.qq.com/s?__biz=Mzg4MDA3MTMzMw==&mid=2247484778&idx=1&sn=8a97c65b24038e4e661c7ffa7ceeb9be&chksm=cf7b82a0f80c0bb66d63687711b820fd3aa26c822d5076eda51f33f2a9aaa2c04049abbf52e7&scene=132#wechat_redirect'
+        self._url = 'https://mp.weixin.qq.com/s?src=11&timestamp=1684749053&ver=4544&signature=Lf8ooZLrMij9oySN4XszQrhZVM5oirKez63AdD6GGcKEJxGvFWkfTcfen2W6S*DCRD4cy0K6e8ZNqxsw0Y7vdwSMz4sOv63bUAEjQUeZvJIf88fOADu1MIudqN-WeYdZ&new=1'
         self._connection = connection_util.ProcessConnection()
         self._proxy = proxy_util.ProxyUtil()
         self._path = os.path.join(os.getcwd(), 'files')
@@ -25,7 +25,8 @@ class MPUtil(object):
 
     def get_content(self):
         get_proxy = self._proxy.get_proxy_list()
-        for item in get_proxy:
+        proxy_sorted = sorted(get_proxy, key=lambda x: x['speed'], reverse=False)
+        for item in proxy_sorted:
             # 代理服务器的IP地址和端口
             proxy_ip = item['ip']
             proxy_port = item['port']

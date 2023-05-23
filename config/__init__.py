@@ -22,3 +22,4 @@ zhihu_cdn_path = os.environ.get('REMOTE_UBUNTU_ZHIHU_CDN_PATH')
 # News API url
 news_api_url = os.environ.get('NEWS_API_URL')
 news_api_key = os.environ.get('NEWS_API_KEY')
+proxy_url = os.environ.get('PROXY_URL')

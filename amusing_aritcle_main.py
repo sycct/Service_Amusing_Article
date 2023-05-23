@@ -29,12 +29,13 @@ class AmusingArticleMian(object):
 
 if __name__ == '__main__':
     init_amusing = AmusingArticleMian()
+    init_amusing.zhihu_run()
     # 实例化一个调度器
-    scheduler = BlockingScheduler(timezone='Asia/Shanghai')
-    # 添加任务并设置触发方式每天8:00点执行一次
-    scheduler.add_job(init_amusing.zhihu_run, 'cron', hour=8, minute=00)
-    # 开始运行调度器
-    try:
-        scheduler.start()
-    except KeyboardInterrupt:
-        sys.exit(0)
+    # scheduler = BlockingScheduler(timezone='Asia/Shanghai')
+    # # 添加任务并设置触发方式每天8:00点执行一次
+    # scheduler.add_job(init_amusing.zhihu_run, 'cron', hour=8, minute=00)
+    # # 开始运行调度器
+    # try:
+    #     scheduler.start()
+    # except KeyboardInterrupt:
+    #     sys.exit(0)
