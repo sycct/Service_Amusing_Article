@@ -3,18 +3,19 @@
 
 import os.path
 import uuid
-import html2text
+from urllib.parse import parse_qs, urlparse
+
 from MySQLdb import DataError
 from datetime import datetime
 
 from config import logging_config, mysql_connection_pool
-from utils import connection_util, proxy_util
+from utils import connection_util, proxy_util, images_util
 
 
 class MPUtil(object):
     def __init__(self):
         # 要访问的目标URL
-        self._url = 'https://mp.weixin.qq.com/s?src=11&timestamp=1684749053&ver=4544&signature=Lf8ooZLrMij9oySN4XszQrhZVM5oirKez63AdD6GGcKEJxGvFWkfTcfen2W6S*DCRD4cy0K6e8ZNqxsw0Y7vdwSMz4sOv63bUAEjQUeZvJIf88fOADu1MIudqN-WeYdZ&new=1'
+        self._url = 'https://mp.weixin.qq.com/s?src=11&timestamp=1684925013&ver=4548&signature=CpF9NFWlZH0LAJQMciskib4YJWIy*1IiPy7P4Ll*R7ahkFrfX27t1h9esObxFTJ9mD0RMhBoErmZe2ubh-oldfSEC6WJQbnwkkw4hpzY7UDXOVoHfU2tJQttiDQqd*33&new=1'
         self._connection = connection_util.ProcessConnection()
         self._proxy = proxy_util.ProxyUtil()
         self._path = os.path.join(os.getcwd(), 'files')
@@ -22,6 +23,9 @@ class MPUtil(object):
         init_logging = logging_config.LoggingConfig()
         self._logging = init_logging.init_logging(logger_name)
         self._mysql = mysql_connection_pool.Mysql()
+        # 获取当前的年月
+        self._now = datetime.now()
+        self._upload_image = images_util.ImagesUtil()
 
     def get_content(self):
         get_proxy = self._proxy.get_proxy_list()
@@ -55,21 +59,31 @@ class MPUtil(object):
                     try:
                         img_format = img['data-type']
                     except KeyError:
-                        continue
+                        # 有些文章不提供 data-type 值，直接通过 wx_fmt 获取文件格式
+                        parsed_url = urlparse(img_url)
+                        query_params = parse_qs(parsed_url.query)
+                        # 获取wx_fmt参数值
+                        img_format = query_params.get('wx_fmt', [''])[0]
                     # 检查响应状态码
                     if img_response:
                         img['class'] = img.get('class', []) + ['lazyload']
                         # 进行地址替换操作，例如将原始地址中的域名部分和文件名部分都替换为新的值
                         new_domain = 'staticx.dev'
-                        new_filename = 'amusing'
+                        new_filename = f'amusing/images/{self._now.year}/{self._now.month}'
                         # 提取图片文件名
                         img_filename = f'{str(uuid.uuid4())}.{img_format}'
                         new_img_url = f'https://{new_domain}/{new_filename}/{img_filename}'
-
                         # 保存图片到本地
                         with open(os.path.join(self._path, img_filename), 'wb') as f:
                             f.write(img_response)
                             print(f"图片 {img_filename} 下载成功")
+                            # 将文件上传到服务器
+                            remote_file_path = f'/var/CDN/{new_filename}'
+                            self._upload_image.update_image_main(local_file_name=img_filename,
+                                                                 remote_file_path=remote_file_path)
+                            # 上传完成之后，删除本地图片
+                            delete_image = images_util.DeleteFileUtil()
+                            delete_image.delete_file(img_filename)
                         # 替换图片标签中的 src 属性为新的地址
                         img['data-src'] = new_img_url
                     else:
