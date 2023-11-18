@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
-import os
 
+import os
 import requests
 from requests import HTTPError, ConnectionError, Timeout
 

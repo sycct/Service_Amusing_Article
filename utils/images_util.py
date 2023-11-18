@@ -8,7 +8,7 @@ import paramiko
 
 from config import logging_config, remote_user, remote_host, bandwagon_host_remote_host, bandwagon_host_remote_user, \
     bandwagon_host_remote_password, bandwagon_host_remote_port, aws_lightsail_in_remote_host, \
-    aws_lightsail_in_remote_port, aws_lightsail_in_remote_user
+    aws_lightsail_in_remote_user
 
 
 class ImagesUtil(object):
