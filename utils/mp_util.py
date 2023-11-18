@@ -15,7 +15,7 @@ from utils import connection_util, proxy_util, images_util
 class MPUtil(object):
     def __init__(self):
         # 要访问的目标URL
-        self._url = 'https://mp.weixin.qq.com/s?src=11&timestamp=1684925013&ver=4548&signature=CpF9NFWlZH0LAJQMciskib4YJWIy*1IiPy7P4Ll*R7ahkFrfX27t1h9esObxFTJ9mD0RMhBoErmZe2ubh-oldfSEC6WJQbnwkkw4hpzY7UDXOVoHfU2tJQttiDQqd*33&new=1'
+        self._url = 'https://mp.weixin.qq.com/s?src=11&timestamp=1686640349&ver=4587&signature=tUJ3FUyQYH*bBtjKQi*raUQ1hV7apSLloqZT8ky7crasXVj56FnwEZqWzdwMwOIhujxeHjdpifF3bAuokSTpcPwjDyGS0JVPvzZ42vadg5okmUIqacGlm1XMoihbnIl7&new=1'
         self._connection = connection_util.ProcessConnection()
         self._proxy = proxy_util.ProxyUtil()
         self._path = os.path.join(os.getcwd(), 'files')

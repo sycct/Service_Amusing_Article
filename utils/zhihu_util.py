@@ -23,7 +23,6 @@ class ZhiHuUtil(object):
         self._mysql = mysql_connection_pool.Mysql()
         self._init_common = common_util.CommonUtil()
         self._key_path = path.join(os.getcwd(), 'key\\wmiss_hk.pem')
-        self._vmiss_us_key_path = path.join(os.getcwd(), 'key\\VMISSLosAngeles.pem')
         self._upload_image = images_util.ImagesUtil()
 
     def zhihu_main(self):
