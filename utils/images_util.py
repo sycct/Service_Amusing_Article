@@ -7,7 +7,8 @@ from os import path
 import paramiko
 
 from config import logging_config, remote_user, remote_host, bandwagon_host_remote_host, bandwagon_host_remote_user, \
-    bandwagon_host_remote_password, bandwagon_host_remote_port
+    bandwagon_host_remote_password, bandwagon_host_remote_port, aws_lightsail_in_remote_host, \
+    aws_lightsail_in_remote_port, aws_lightsail_in_remote_user
 
 
 class ImagesUtil(object):
@@ -95,7 +96,7 @@ class ImagesUtil(object):
     def update_aws_lightsail_in_server(self, local_file_name, remote_file_path):
         # 将文件复制到 aws lightsail in 服务器
         # 服务器通过证书登录
-        self.upload_images_to_server(host=remote_host, username=remote_user,
+        self.upload_images_to_server(host=aws_lightsail_in_remote_host, username=aws_lightsail_in_remote_user,
                                      private_key_file_path=self._aws_lightsail_in_key_path,
                                      local_file_name=local_file_name, remote_file_path=remote_file_path)
 
@@ -104,23 +105,24 @@ class ImagesUtil(object):
         self.update_bandwagon_us_server(local_file_name=local_file_name, remote_file_path=remote_file_path)
         self.update_aws_lightsail_in_server(local_file_name=local_file_name, remote_file_path=remote_file_path)
 
-    class DeleteFileUtil(object):
-        def __init__(self):
-            logger_name = 'images_util'
-            init_logging = logging_config.LoggingConfig()
-            self._logging = init_logging.init_logging(logger_name)
 
-        def delete_file(self, file_name):
-            # 文件路径
-            local_file_path = path.join(os.getcwd(), 'files', file_name)
-            try:
-                # 如果文件存在
-                if os.path.exists(local_file_path):
-                    # 删除文件
-                    os.remove(local_file_path)
-                else:
-                    # 则返回文件不存在
-                    self._logging.error('no such file:%s' % file_name)
-            except PermissionError:
-                # 处理权限错误
-                self._logging.warning('PermissionError: 另一个程序正在使用此文件。等待1秒后重试...')
+class DeleteFileUtil(object):
+    def __init__(self):
+        logger_name = 'images_util'
+        init_logging = logging_config.LoggingConfig()
+        self._logging = init_logging.init_logging(logger_name)
+
+    def delete_file(self, file_name):
+        # 文件路径
+        local_file_path = path.join(os.getcwd(), 'files', file_name)
+        try:
+            # 如果文件存在
+            if os.path.exists(local_file_path):
+                # 删除文件
+                os.remove(local_file_path)
+            else:
+                # 则返回文件不存在
+                self._logging.error('no such file:%s' % file_name)
+        except PermissionError:
+            # 处理权限错误
+            self._logging.warning('PermissionError: 另一个程序正在使用此文件。等待1秒后重试...')

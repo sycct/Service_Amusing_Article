@@ -2,6 +2,7 @@
 # -*- coding: UTF-8 -*-
 
 import os
+from datetime import datetime
 from os import path
 import requests
 import uuid
@@ -24,6 +25,8 @@ class ZhiHuUtil(object):
         self._init_common = common_util.CommonUtil()
         self._key_path = path.join(os.getcwd(), 'key\\wmiss_hk.pem')
         self._upload_image = images_util.ImagesUtil()
+        # 获取当前的年月
+        self._now = datetime.now()
 
     def zhihu_main(self):
         get_title_data = self.get_new_latest()
@@ -43,8 +46,7 @@ class ZhiHuUtil(object):
             get_local_files = self._init_common.findAllFile(local_file_path)
             for file in get_local_files:
                 # 上传单个文件到服务器
-                # vmiss hk 服务器
-                remote_file_path = zhihu_cdn_path + file
+                remote_file_path = f'{zhihu_cdn_path}{self._now.year}/{self._now.month}'
                 self._upload_image.update_image_main(local_file_name=file, remote_file_path=remote_file_path)
                 # 删除单个文件
                 delete_image = images_util.DeleteFileUtil()
@@ -67,8 +69,7 @@ class ZhiHuUtil(object):
         else:
             self._logging.error(f"获取知乎日报 news latest 数据失败。")
 
-    @staticmethod
-    def save_image(img_url):
+    def save_image(self, img_url):
         # 连接目标网站，获取内容，获取图片内容
         # img_url: https://pic1.zhimg.com/v2-1737233d284dea9e61db500f35da0451.jpg?source=8673f162
         img_content = requests.get(img_url)
@@ -81,7 +82,7 @@ class ZhiHuUtil(object):
         with open(img_file_path, 'wb') as f:
             # 写文件
             f.write(img_content.content)
-        new_img_url = "https://staticx.dev/amusing/z/" + img_name
+        new_img_url = f"https://staticx.dev/amusing/z/{self._now.year}/{self._now.month}/" + img_name
         return new_img_url
 
     def get_zhihu_content(self, content_id):
