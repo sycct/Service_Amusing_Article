@@ -2,19 +2,25 @@
 # -*- coding: UTF-8 -*-
 
 import os
+import time
 
 from os import path
+from socket import socket
+
 import paramiko
 
 from config import logging_config, remote_user, remote_host, bandwagon_host_remote_host, bandwagon_host_remote_user, \
     bandwagon_host_remote_password, bandwagon_host_remote_port, aws_lightsail_in_remote_host, \
-    aws_lightsail_in_remote_user
+    aws_lightsail_in_remote_user, max_retries, retry_delay
 
 
 class ImagesUtil(object):
     def __init__(self):
         self._key_path = path.join(os.getcwd(), 'key', 'wmiss_hk.pem')
         self._aws_lightsail_in_key_path = path.join(os.getcwd(), 'key', 'LightsailDefaultKey-ap-south-1.pem')
+        logger_name = 'image_util'
+        init_logging = logging_config.LoggingConfig()
+        self._logging = init_logging.init_logging(logger_name)
 
     def upload_images_to_server(self, host, username, private_key_file_path, local_file_name, remote_file_path,
                                 port=22):
@@ -32,7 +38,17 @@ class ImagesUtil(object):
         ssh = paramiko.SSHClient()
         private_key = paramiko.RSAKey.from_private_key_file(private_key_file_path)
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        ssh.connect(pkey=private_key, hostname=host, port=port, username=username)
+        for retry in range(max_retries):
+            try:
+                ssh.connect(pkey=private_key, hostname=host, port=port, username=username, timeout=30)
+                # 如果成功，退出循环
+                break
+            except socket.timeout as e:
+                self._logging.warning(f"连接超时，正在进行第 {retry + 1}/{max_retries} 次重试.")
+                time.sleep(retry_delay)
+            except Exception as e:
+                self._logging.error(f"发生其他异常: {e}")
+                # 处理其他异常，例如记录日志或者抛出异常
         sftp = ssh.open_sftp()
         # 本地文件路径
         local_file_path = path.join(os.getcwd(), 'files', local_file_name)

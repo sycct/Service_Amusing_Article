@@ -29,3 +29,7 @@ zhihu_cdn_path = os.environ.get('REMOTE_UBUNTU_ZHIHU_CDN_PATH')
 news_api_url = os.environ.get('NEWS_API_URL')
 news_api_key = os.environ.get('NEWS_API_KEY')
 proxy_url = os.environ.get('PROXY_URL')
+# 连接服务器重试次数
+max_retries = os.environ.get('MAX_RETRIES')
+# 每次重试中间时间间隔
+retry_delay = os.environ.get('RETRY_DELAY')
