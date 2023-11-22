@@ -38,14 +38,14 @@ class ImagesUtil(object):
         ssh = paramiko.SSHClient()
         private_key = paramiko.RSAKey.from_private_key_file(private_key_file_path)
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        for retry in range(max_retries):
+        for retry in range(int(max_retries)):
             try:
                 ssh.connect(pkey=private_key, hostname=host, port=port, username=username, timeout=30)
                 # 如果成功，退出循环
                 break
             except socket.timeout as e:
                 self._logging.warning(f"连接超时，正在进行第 {retry + 1}/{max_retries} 次重试.")
-                time.sleep(retry_delay)
+                time.sleep(int(retry_delay))
             except Exception as e:
                 self._logging.error(f"发生其他异常: {e}")
                 # 处理其他异常，例如记录日志或者抛出异常
