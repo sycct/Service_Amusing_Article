@@ -11,7 +11,8 @@ import paramiko
 
 from config import logging_config, remote_user, remote_host, bandwagon_host_remote_host, bandwagon_host_remote_user, \
     bandwagon_host_remote_password, bandwagon_host_remote_port, aws_lightsail_in_remote_host, \
-    aws_lightsail_in_remote_user, max_retries, retry_delay
+    aws_lightsail_in_remote_user, max_retries, retry_delay, gcore_in_local_user, gcore_in_local_host, \
+    gcore_in_local_password, gcore_in_local_port
 
 
 class ImagesUtil(object):
@@ -116,10 +117,16 @@ class ImagesUtil(object):
                                      private_key_file_path=self._aws_lightsail_in_key_path,
                                      local_file_name=local_file_name, remote_file_path=remote_file_path)
 
+    def update_gcore_us_server(self, local_file_name, remote_file_path):
+        # GCore 服务器是通过用户名和密码登录
+        self.update_files_to_ubuntu_server(host=gcore_in_local_host, user=gcore_in_local_user,
+                                           password=gcore_in_local_password, local_file_name=local_file_name,
+                                           remote_file_path=remote_file_path, port=gcore_in_local_port)
+
     def update_image_main(self, local_file_name, remote_file_path):
         self.update_vmiss_hk_server(local_file_name=local_file_name, remote_file_path=remote_file_path)
         self.update_bandwagon_us_server(local_file_name=local_file_name, remote_file_path=remote_file_path)
-        self.update_aws_lightsail_in_server(local_file_name=local_file_name, remote_file_path=remote_file_path)
+        self.update_gcore_us_server(local_file_name=local_file_name, remote_file_path=remote_file_path)
 
 
 class DeleteFileUtil(object):

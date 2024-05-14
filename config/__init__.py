@@ -23,6 +23,11 @@ bandwagon_host_remote_password = os.environ.get('BANDWAGONHOST_REMOTE_UBUNTU_PAS
 aws_lightsail_in_remote_host = os.environ.get('AWS_LIGHTSAIL_IN_REMOTE_UBUNTU_HOST')
 aws_lightsail_in_remote_user = os.environ.get('AWS_LIGHTSAIL_IN_REMOTE_UBUNTU_USER')
 aws_lightsail_in_remote_port = os.environ.get('AWS_LIGHTSAIL_IN_REMOTE_PORT')
+# GCore US host server info
+gcore_in_local_host = os.environ.get('GCORE_IN_LOCAL_HOST')
+gcore_in_local_user = os.environ.get('GCORE_IN_LOCAL_USER')
+gcore_in_local_password = os.environ.get('GCORE_IN_LOCAL_PASSWORD')
+gcore_in_local_port = os.environ.get('GCORE_IN_LOCAL_PORT')
 # 保存知乎日报图片远程文件路径
 zhihu_cdn_path = os.environ.get('REMOTE_UBUNTU_ZHIHU_CDN_PATH')
 # News API url
